@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 function App() {
   const [user, setUser] = useState(null);
   useEffect(() => {
-    const getUser = async () => {
+    const getUser = () => {
       fetch("http://localhost:5000/auth/login/success", {
         method: "GET",
         credentials: "include",
@@ -23,7 +23,7 @@ function App() {
           throw new Error("Authentication failed");
         })
         .then((resObject) => {
-          setUser(resObject);
+          setUser(resObject.user);
         })
         .catch((err) => {
           console.log(err);
@@ -31,7 +31,6 @@ function App() {
     };
     getUser();
   }, []);
-  console.log(user);
   return (
     <BrowserRouter>
       <div>
