@@ -1,6 +1,9 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
+const FACEBOOK_APP_ID = "process.env.FACEBOOK_APP_ID";
+const FACEBOOK_APP_SECRET = "process.env.FACEBOOK_APP_SECRET";
 const GOOGLE_CLIENT_ID = "process.env.GOOGLE_CLIENT_ID";
 const GOOGLE_CLIENT_SECRET = "process.env.GOOGLE_CLIENT_SECRET";
 const GITHUB_CLIENT_ID = "627e40005d456df458d7";
@@ -10,7 +13,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "http://localhost:3000/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
@@ -33,6 +36,20 @@ passport.use(
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
+    }
+  )
+);
+passport.use(
+  new FacebookStrategy(
+    {
+      clientID: FACEBOOK_APP_ID,
+      clientSecret: FACEBOOK_APP_SECRET,
+      callbackURL: "http://localhost:3000/auth/facebook/callback",
+    },
+    function (accessToken, refreshToken, profile, cb) {
+      User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+        return cb(err, user);
+      });
     }
   )
 );
